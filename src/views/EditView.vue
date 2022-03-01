@@ -1,19 +1,19 @@
 <template>
-  <div class="home">
+  <div class="edit">
     <img alt="Megaport Logo"
       src="https://portal.megaport.com/img/Megaport-Logo-Web-72dpi-RGB.4d150500.png">
-    <home-info message="Welcome to Our Megaquiz!" />
+    <name-entry message="Wanting to contribute?"
+      input-value="Edit Questions" />
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HomeInfo from '@/components/HomeInfo.vue'
+import NameEntry from '@/components/NameEntry.vue'
 
 export default {
-  name: 'HomeView',
+  name: 'EditView',
   components: {
-    'home-info': HomeInfo,
+    'name-entry': NameEntry,
   },
 }
 </script>
