@@ -4,8 +4,14 @@
             "id": 1,
             "type": "multiple-choice",
             "question": "What year was Megaport founded in?",
-            "options": ["2009", "2016", "2010", "2013"],
-            "answer": "2013"
+            "options": [
+                "2009",
+                "2016",
+                "2010",
+                "2013"
+            ],
+            "answer": "2013",
+            "valueType": "year"
         },
         {
             "id": 2,
@@ -18,8 +24,14 @@
             "id": 3,
             "type": "multiple-choice",
             "question": "Which of the following is not a Megaport location?",
-            "options": ["Germany", "United Arab Emirates", "Austria", "Vietnam"],
-            "answer": "Austria"
+            "options": [
+                "Germany",
+                "United Arab Emirates",
+                "Austria",
+                "Vietnam"
+            ],
+            "answer": "Austria",
+            "valueType": "city"
         },
         {
             "id": 4,
@@ -32,9 +44,14 @@
             "id": 5,
             "type": "multiple-choice",
             "question": "In what year was Megaport's network expanded to North America and Europe?",
-            "options": ["2016", "2015", "2014", "2017"],
-            "answer": "2016"
+            "options": [
+                "2016",
+                "2015",
+                "2014",
+                "2017"
+            ],
+            "answer": "2016",
+            "valueType": "year"
         }
-
     ]
 }

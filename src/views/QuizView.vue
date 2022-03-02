@@ -45,7 +45,13 @@
           <div v-if="question.type === 'multiple-choice'"
             class="question-body">
             <select :id="question.answer + '-' + question.id"
+              v-model="userAnswers['question-' + question.id]"
               :name="question.answer + '-' + question.id">
+              <option :value="undefined"
+                disabled
+                selected>
+                {{ `Select a ${question.valueType}` }}
+              </option>
               <option v-for="(option, optionIndex) in question.options"
                 :key="optionIndex"
                 :value="option">
@@ -55,7 +61,8 @@
           </div>
           <div v-else
             class="question-body">
-            <input type="text"
+            <input v-model="userAnswers['question-' + question.id]"
+              type="text"
               :placeholder="question.placeholder"
               :name="question.answer + '-' + question.id">
           </div>
@@ -98,6 +105,7 @@ export default {
       userName: '',
       userAge: 0,
       loading: false,
+      userAnswers: {},
     }
   },
   computed: {
@@ -149,13 +157,16 @@ export default {
         return `${this.userName}, I think at ${this.userAge} you are too young to take this quiz but why don't you prove me wrong?`
       }
     },
+    // userAnswers() {
+    //   let submittedAnswers = {}
+    //   this.initialQuestions.forEach(question => {
+    //     submittedAnswers[`question-${question.id}`] = ''
+    //   })
+    //   return submittedAnswers
+    // },
   },
   methods: {
-    // printThis(data) {
-    //   console.log(data)
-    // },
     onSortingSelection(event) {
-      console.log(this.sortedQuestions[0])
       return (this.sortingOrder = event.target.value)
     },
     async nameWasChanged(emittedName) {
@@ -184,7 +195,6 @@ export default {
         }
       })
       this.answersSubmitted = true
-      console.log(this.sortedQuestions[0])
     },
     resultMessage(result) {
       if (result === 'correct') {
@@ -206,6 +216,7 @@ export default {
       this.answersSubmitted = false
       this.userName = ''
       this.userAge = 0
+      this.userAnswers = {}
     },
   },
 }
