@@ -8,17 +8,10 @@
       @nameEntered="nameWasChanged" />
     <div v-if="loading"
       class="loader" />
-    <template v-if="userAge">
-      <template v-if="userAge > 40">
-        `Well ${userName}, no pressure but at ${userAge} we expect you to be full of wisdom!`
-      </template>
-      <template v-else-if="userAge > 25">
-        `Oh ${userName}, you are only ${userAge}! Had you said that earlier, we would have chosen easier questions!`
-      </template>
-      <template v-else>
-        `${userName}, I think at ${userAge} you are too young to take this quiz but why don't you prove me wrong?`
-      </template>
-    </template>
+    <p v-if="userAge"
+      id="age-message">
+      {{ userAgeString }}
+    </p>
     <div v-if="nameEntered"
       class="sorting-wrapper">
       <div class="sorting-label">
@@ -66,11 +59,21 @@
               :placeholder="question.placeholder"
               :name="question.answer + '-' + question.id">
           </div>
+          <div v-if="question.result"
+            :class="{correct: question.userRespondedCorrectly, incorrect: !question.userRespondedCorrectly}">
+            {{ resultMessage(question.result) }}
+          </div>
         </div>
       </div>
-      <input id="submit-form"
+      <input v-if="!answersSubmitted"
+        id="submit-form"
         type="submit"
         value="Submit Answers">
+      <input v-if="answersSubmitted"
+        id="reset-form"
+        type="button"
+        value="Try Again"
+        @click="resetForm">
     </form>
   </div>
 </template>
@@ -101,11 +104,9 @@ export default {
     sortedQuestions() {
       if (this.sortingOrder !== 'Default') {
         return this.initialQuestions.slice().sort((a, b) => {
-          let questionA = a.question.toUpperCase()
-          let questionB = b.question.toUpperCase()
-          let typeA = a.type.toUpperCase()
-          let typeB = b.type.toUpperCase()
           if (this.sortingOrder === 'Alphabetical') {
+            let questionA = a.question.toUpperCase()
+            let questionB = b.question.toUpperCase()
             if (questionA < questionB) {
               return -1
             }
@@ -114,10 +115,22 @@ export default {
             }
             return 0
           } else if (this.sortingOrder === 'Type') {
+            let typeA = a.type.toUpperCase()
+            let typeB = b.type.toUpperCase()
             if (typeA < typeB) {
               return -1
             }
             if (typeA > typeB) {
+              return 1
+            }
+            return 0
+          } else if (this.sortingOrder === 'Results') {
+            let resultA = a.result.toUpperCase()
+            let resultB = b.result.toUpperCase()
+            if (resultA < resultB) {
+              return -1
+            }
+            if (resultA > resultB) {
               return 1
             }
             return 0
@@ -127,12 +140,22 @@ export default {
         return this.initialQuestions
       }
     },
+    userAgeString() {
+      if (this.userAge > 40) {
+        return `Well ${this.userName}, no pressure but at ${this.userAge} we expect you to be full of wisdom!`
+      } else if (this.userAge > 25) {
+        return `Oh ${this.userName}, you are only ${this.userAge}! Had you said that earlier, we would have chosen easier questions!`
+      } else {
+        return `${this.userName}, I think at ${this.userAge} you are too young to take this quiz but why don't you prove me wrong?`
+      }
+    },
   },
   methods: {
-    printThis(data) {
-      console.log(data)
-    },
+    // printThis(data) {
+    //   console.log(data)
+    // },
     onSortingSelection(event) {
+      console.log(this.sortedQuestions[0])
       return (this.sortingOrder = event.target.value)
     },
     async nameWasChanged(emittedName) {
@@ -150,17 +173,47 @@ export default {
     },
     markAnswers(submitEvent) {
       this.sortingOptions.push('Results')
-      console.log(submitEvent.target.elements)
-      // this.sortedQuestions.forEach(question => {
-      //   console.log(submitEvent.target.elements[`${question.answer}-${question.id}`]);
-      // });
+      this.sortedQuestions.forEach(question => {
+        const answer = submitEvent.target.elements[`${question.answer}-${question.id}`].value
+        if (answer.toUpperCase() === question.answer.toUpperCase()) {
+          question['result'] = 'correct'
+          question['userRespondedCorrectly'] = true
+        } else {
+          question['result'] = 'incorrect'
+          question['userRespondedCorrectly'] = false
+        }
+      })
+      this.answersSubmitted = true
+      console.log(this.sortedQuestions[0])
+    },
+    resultMessage(result) {
+      if (result === 'correct') {
+        return 'Lucky guess!'
+      } else if (result === 'incorrect') {
+        return `This ain't right!`
+      } else {
+        return `We don't even know the answer ourselves!`
+      }
+    },
+    resetForm() {
+      for (let i = 0; i < this.sortedQuestions.length; i++) {
+        delete this.sortedQuestions[i]['result']
+        delete this.sortedQuestions[i]['userRespondedCorrectly']
+      }
+      this.sortingOptions.pop()
+      this.sortingOrder = 'Default'
+      this.nameEntered = false
+      this.answersSubmitted = false
+      this.userName = ''
+      this.userAge = 0
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-input:focus {
+input:focus,
+select:focus {
   outline: none;
 }
 .loader {
@@ -172,6 +225,10 @@ input:focus {
   border-bottom: 14px solid red;
   border-radius: 50%;
   animation: spin 2s linear infinite;
+}
+#age-message {
+  width: 90%;
+  margin: 2em auto;
 }
 @keyframes spin {
   0% {
@@ -213,6 +270,9 @@ form {
     width: 90%;
     margin: 0 auto;
     text-align: left;
+    &:hover {
+      opacity: 0.8;
+    }
     .numbered-question {
       height: fit-content;
       width: 100%;
@@ -252,21 +312,57 @@ form {
           border: 1px solid #b5b5b5;
         }
       }
+      .correct,
+      .incorrect {
+        text-align: end;
+        margin: 0 -1px;
+        padding: 0.3em 0.6em;
+      }
+      .correct {
+        background-color: #9cff88;
+        border: 1px solid #6cb45d;
+        border-block-end: none;
+      }
+      .incorrect {
+        background-color: #ff8888;
+        border: 1px solid #a35656;
+        border-block-end: none;
+      }
     }
   }
-  #submit-form {
+  #submit-form,
+  #reset-form {
     width: calc(90% + 2px);
     margin: 0;
-    padding: 0.3em 0.6em;
+    padding: 0.5em;
     background-color: #080825;
     border: 1px solid #080825;
     border-radius: 0;
     color: #f5f5f5;
     font-size: 1.1em;
+    font-weight: 600;
+  }
+  #submit-form {
     &:hover {
       background-color: #229df5;
       border: 1px solid #b5b5b5;
-      font-weight: 600;
+    }
+    &:active {
+      background-color: #b5b5b5;
+      border: 1px solid #229df5;
+      color: #080825;
+    }
+  }
+  #reset-form {
+    &:hover {
+      background-color: #ff8888;
+      border: 1px solid #a35656;
+      color: #080825;
+    }
+    &:active {
+      background-color: #b5b5b5;
+      border: 1px solid #229df5;
+      color: #080825;
     }
   }
 }
