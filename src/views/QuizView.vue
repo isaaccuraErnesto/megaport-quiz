@@ -20,8 +20,7 @@
       <div class="sorting-box">
         <select id="sorting-options"
           v-model="sortingOrder"
-          name="sorting-options"
-          @change="onSortingSelection">
+          name="sorting-options">
           <option v-for="(option, index) in sortingOptions"
             :key="index"
             :value="option">
@@ -37,16 +36,16 @@
         class="question-wrapper">
         <div class="numbered-question">
           <div class="question-heading">
-            <label :for="question.answer + '-' + question.id">
+            <label :for="`${question.answer}-${question.id}`">
               <span>{{ index + 1 }}</span>
               {{ question.question }}
             </label>
           </div>
           <div v-if="question.type === 'multiple-choice'"
             class="question-body">
-            <select :id="question.answer + '-' + question.id"
-              v-model="userAnswers['question-' + question.id]"
-              :name="question.answer + '-' + question.id">
+            <select :id="`${question.answer}-${question.id}`"
+              v-model="userAnswers[`question-${question.id}`]"
+              :name="`${question.answer}-${question.id}`">
               <option :value="undefined"
                 disabled
                 selected>
@@ -61,10 +60,10 @@
           </div>
           <div v-else
             class="question-body">
-            <input v-model="userAnswers['question-' + question.id]"
+            <input v-model="userAnswers[`question-${question.id}`]"
               type="text"
               :placeholder="question.placeholder"
-              :name="question.answer + '-' + question.id">
+              :name="`${question.answer}-${question.id}`">
           </div>
           <div v-if="question.result"
             :class="{correct: question.userRespondedCorrectly, incorrect: !question.userRespondedCorrectly}">
@@ -87,14 +86,17 @@
 
 <script>
 import NameEntry from '@/components/NameEntry.vue'
+import initialData from '@/assets/initialQuestions.json'
 
-const initialData = require('@/assets/initialQuestions.json')
+//const initialData = require('@/assets/initialQuestions.json')
 
 export default {
   name: 'QuizView',
+
   components: {
     'name-entry': NameEntry,
   },
+
   data() {
     return {
       initialQuestions: initialData.questions,
@@ -108,6 +110,7 @@ export default {
       userAnswers: {},
     }
   },
+
   computed: {
     sortedQuestions() {
       if (this.sortingOrder !== 'Default') {
@@ -157,18 +160,29 @@ export default {
         return `${this.userName}, I think at ${this.userAge} you are too young to take this quiz but why don't you prove me wrong?`
       }
     },
-    // userAnswers() {
-    //   let submittedAnswers = {}
-    //   this.initialQuestions.forEach(question => {
-    //     submittedAnswers[`question-${question.id}`] = ''
-    //   })
-    //   return submittedAnswers
-    // },
   },
+
+  // watch: {
+  //   sortingOrder: {
+  //     immediate: true,
+  //     handler(newValue, oldValue) {
+  //       console.log(`${newValue} and ${oldValue}`)
+  //       console.log(this.sortingOrder)
+  //     },
+  //   },
+  //   userAnswers: {
+  //     immediate: true,
+  //     deep: true,
+  //     handler(newV, oldV) {
+  //       console.log(JSON.stringify(newV, null, 2))
+  //       console.log(JSON.stringify(oldV, null, 2))
+  //       // console.log(newV)
+  //       // console.log(oldV)
+  //     },
+  //   },
+  // },
+
   methods: {
-    onSortingSelection(event) {
-      return (this.sortingOrder = event.target.value)
-    },
     async nameWasChanged(emittedName) {
       this.nameEntered = true
       this.loading = true
@@ -237,10 +251,6 @@ select:focus {
   border-radius: 50%;
   animation: spin 2s linear infinite;
 }
-#age-message {
-  width: 90%;
-  margin: 2em auto;
-}
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -248,6 +258,10 @@ select:focus {
   100% {
     transform: rotate(360deg);
   }
+}
+#age-message {
+  width: 90%;
+  margin: 2em auto;
 }
 .sorting-wrapper {
   display: flex;
