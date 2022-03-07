@@ -6,7 +6,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "deploy": "gh-pages -d dist",
+    "deploy": "sh deploy.sh",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
