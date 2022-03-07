@@ -12,6 +12,7 @@ import HomeInfo from '@/components/HomeInfo.vue'
 
 export default {
   name: 'HomeView',
+  
   components: {
     'home-info': HomeInfo,
   },

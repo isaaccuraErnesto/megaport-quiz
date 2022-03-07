@@ -22,6 +22,7 @@
 <script>
 export default {
   name: 'HomeInfo',
+  
   props: {
     message: {
       default: 'Welcome!',

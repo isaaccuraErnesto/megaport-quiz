@@ -122,35 +122,17 @@ export default {
       if (this.sortingOrder !== 'Default') {
         return this.questions.slice().sort((a, b) => {
           if (this.sortingOrder === 'Alphabetical') {
-            let questionA = a.question.toUpperCase()
-            let questionB = b.question.toUpperCase()
-            if (questionA < questionB) {
-              return -1
-            }
-            if (questionA > questionB) {
-              return 1
-            }
-            return 0
+            let questionA = a.question
+            let questionB = b.question
+            return questionA.localeCompare(questionB, 'en', { sensitivity: 'base' })
           } else if (this.sortingOrder === 'Type') {
-            let typeA = a.type.toUpperCase()
-            let typeB = b.type.toUpperCase()
-            if (typeA < typeB) {
-              return -1
-            }
-            if (typeA > typeB) {
-              return 1
-            }
-            return 0
+            let typeA = a.type
+            let typeB = b.type
+            return typeA.localeCompare(typeB, 'en', { sensitivity: 'base' })
           } else if (this.sortingOrder === 'Results') {
-            let resultA = a.result.toUpperCase()
-            let resultB = b.result.toUpperCase()
-            if (resultA < resultB) {
-              return -1
-            }
-            if (resultA > resultB) {
-              return 1
-            }
-            return 0
+            let resultA = a.result
+            let resultB = b.result
+            return resultA.localeCompare(resultB, 'en', { sensitivity: 'base' })
           }
         })
       } else {
