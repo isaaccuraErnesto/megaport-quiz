@@ -2,9 +2,11 @@
   "name": "megaport-quiz",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://isaaccuraErnesto.github.io/megaport-quiz",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "deploy": "gh-pages -d build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
