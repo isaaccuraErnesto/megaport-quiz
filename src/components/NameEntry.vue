@@ -4,9 +4,10 @@
       {{ message }}
     </h2>
     <form @submit.prevent="handleNameEntry">
-      <input v-model="userName"
+      <input v-model="inputName"
         type="text"
-        placeholder="Enter your name">
+        placeholder="Enter your name"
+        required>
       <input type="submit"
         :value="inputValue">
     </form>
@@ -14,8 +15,11 @@
 </template>
 
 <script>
+import { mapActions, mapMutations } from 'vuex'
+
 export default {
   name: 'NameEntry',
+
   props: {
     message: {
       default: 'Megaquiz',
@@ -28,14 +32,20 @@ export default {
       required: true,
     },
   },
+
   data() {
     return {
-      userName: '',
+      inputName: '',
     }
   },
+  
   methods: {
+    ...mapActions('userInfo', ['registerName', 'fetchAge']),
+    ...mapMutations('uiChangers', ['setUserEnteredName']),
     handleNameEntry() {
-      this.$emit('nameEntered', this.userName)
+      this.registerName(this.inputName)
+      this.setUserEnteredName(true)
+      this.fetchAge(this.inputName)
     },
   },
 }

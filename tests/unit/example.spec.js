@@ -2,11 +2,19 @@ import { shallowMount } from '@vue/test-utils'
 import HomeInfo from '@/components/HomeInfo.vue'
 
 describe('HomeInfo.vue', () => {
-  it('renders props.msg when passed', () => {
-    const msg = 'new message'
+  it('renders props.message when passed', () => {
+    const message = 'new message'
     const wrapper = shallowMount(HomeInfo, {
-      propsData: { msg },
+      propsData: { message },
     })
-    expect(wrapper.text()).toMatch(msg)
+    expect(wrapper.text()).toMatch(message)
+  })
+
+  it('displays the h2 tag', () => {
+    const wrapper = shallowMount(HomeInfo)
+    const h2 = wrapper.find('h2')
+    expect(h2.exists()).not.toBe(false)
   })
 })
+
+

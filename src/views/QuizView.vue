@@ -4,8 +4,7 @@
       src="https://portal.megaport.com/img/Megaport-Logo-Web-72dpi-RGB.4d150500.png">
     <name-entry v-if="!nameEntered"
       message="Feeling confident enough?"
-      input-value="Take Quiz"
-      @nameEntered="nameWasChanged" />
+      input-value="Take Quiz" />
     <div v-if="loading"
       class="loader" />
     <p v-if="userAge"
@@ -45,7 +44,8 @@
             class="question-body">
             <select :id="`${question.answer}-${question.id}`"
               v-model="userAnswers[`question-${question.id}`]"
-              :name="`${question.answer}-${question.id}`">
+              :name="`${question.answer}-${question.id}`"
+              required>
               <option :value="undefined"
                 disabled
                 selected>
@@ -63,7 +63,8 @@
             <input v-model="userAnswers[`question-${question.id}`]"
               type="text"
               :placeholder="question.placeholder"
-              :name="`${question.answer}-${question.id}`">
+              :name="`${question.answer}-${question.id}`"
+              required>
           </div>
           <div v-if="question.result"
             :class="{correct: question.userRespondedCorrectly, incorrect: !question.userRespondedCorrectly}">
@@ -86,8 +87,11 @@
 
 <script>
 import NameEntry from '@/components/NameEntry.vue'
-import initialData from '@/assets/initialQuestions.json'
+import { mapMutations, mapState } from 'vuex'
 
+//Two ways of retrieving data from a local .json file
+
+//import initialData from '@/assets/initialQuestions.json'
 //const initialData = require('@/assets/initialQuestions.json')
 
 export default {
@@ -99,22 +103,24 @@ export default {
 
   data() {
     return {
-      initialQuestions: initialData.questions,
       sortingOptions: ['Default', 'Alphabetical', 'Type'],
       sortingOrder: 'Default',
-      nameEntered: false,
       answersSubmitted: false,
-      userName: '',
-      userAge: 0,
-      loading: false,
       userAnswers: {},
     }
   },
 
   computed: {
+    ...mapState({
+      userName: state => state.userInfo.userName,
+      userAge: state => state.userInfo.userAge,
+      questions: state => state.questions.questions,
+      nameEntered: state => state.uiChangers.nameEntered,
+      loading: state => state.uiChangers.agifyLoading,
+    }),
     sortedQuestions() {
       if (this.sortingOrder !== 'Default') {
-        return this.initialQuestions.slice().sort((a, b) => {
+        return this.questions.slice().sort((a, b) => {
           if (this.sortingOrder === 'Alphabetical') {
             let questionA = a.question.toUpperCase()
             let questionB = b.question.toUpperCase()
@@ -148,7 +154,7 @@ export default {
           }
         })
       } else {
-        return this.initialQuestions
+        return this.questions
       }
     },
     userAgeString() {
@@ -183,19 +189,8 @@ export default {
   // },
 
   methods: {
-    async nameWasChanged(emittedName) {
-      this.nameEntered = true
-      this.loading = true
-      this.userName = emittedName
-      try {
-        const response = await fetch(`https://api.agify.io?name=${emittedName}`)
-        const agifyData = await response.json()
-        this.userAge = agifyData.age
-        this.loading = false
-      } catch (error) {
-        console.log(error)
-      }
-    },
+    ...mapMutations('userInfo', ['resetUserInfo']),
+    ...mapMutations('uiChangers', ['resetNameEntered']),
     markAnswers(submitEvent) {
       this.sortingOptions.push('Results')
       this.sortedQuestions.forEach(question => {
@@ -226,11 +221,10 @@ export default {
       }
       this.sortingOptions.pop()
       this.sortingOrder = 'Default'
-      this.nameEntered = false
       this.answersSubmitted = false
-      this.userName = ''
-      this.userAge = 0
       this.userAnswers = {}
+      this.resetUserInfo()
+      this.resetNameEntered()
     },
   },
 }
