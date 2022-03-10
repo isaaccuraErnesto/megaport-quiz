@@ -17,6 +17,9 @@
 
 <style lang="scss">
 #app {
+  max-width: 1000px;
+  min-width: 800px;
+  margin-inline: auto;
   font-family: Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

@@ -128,6 +128,7 @@ export default {
   computed: {
     ...mapState({
       idsToBeUpdated: state => state.updateQuestions.idsToBeUpdated,
+      userName: state => state.userInfo.userName,
     }),
   },
 
@@ -136,20 +137,24 @@ export default {
     ...mapMutations('updateQuestions', ['removeId']),
     updateQuestion() {
       let updatedQuestion = {}
+      let updatedOptionsToBeChecked = [this.optionOne, this.optionTwo, this.optionThree, this.optionFour]
       if (this.questionTypeToUpdate === 'multiple-choice') {
-        updatedQuestion = {
-          id: this.selected.id,
-          type: 'multiple-choice',
-          question: this.questionToUpdate,
-          options: [
-            this.optionOne,
-            this.optionTwo,
-            this.optionThree,
-            this.optionFour,
-          ],
-          answer: this.updatedAnswer,
-          valueType: this.updatedValueType,
-        }
+        if (!updatedOptionsToBeChecked.includes(this.updatedAnswer)) {
+          alert(`Very funny ${this.userName}, none of your options matches your answer!`)
+        } else
+          updatedQuestion = {
+            id: this.selected.id,
+            type: 'multiple-choice',
+            question: this.questionToUpdate,
+            options: [
+              this.optionOne,
+              this.optionTwo,
+              this.optionThree,
+              this.optionFour,
+            ],
+            answer: this.updatedAnswer,
+            valueType: this.updatedValueType,
+          }
       } else if (this.questionTypeToUpdate === 'type-a-word') {
         updatedQuestion = {
           id: this.selected.id,
