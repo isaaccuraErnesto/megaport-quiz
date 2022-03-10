@@ -29,17 +29,6 @@ describe('NameEntry.vue', () => {
   })
 })
 
-// describe('EditView.vue', () => {
-//   it('displays the form', () => {
-//     const wrapper = mount(EditView)
-
-
-//     // wrapper.vm.showAddQuestionForm()
-//     // expect(wrapper.element.form.style.display).not.toBe('none')
-//     const form = wrapper.find('.add-question-form')
-//     expect(form.style.display).toBe('none')
-//   })
-// })
 
 
 
