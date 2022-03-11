@@ -3,7 +3,7 @@
     <h1>{{ message }}</h1>
     <p>
       Here you'll have an opportunity to test your Megaport knowledge and learn
-      one thing or two. If you want to be better prepared before taking our
+      a thing or two. If you want to be better prepared before taking our
       quiz, visit our
       <a href="https://megaport.com"
         target="_blank"
@@ -22,7 +22,7 @@
 <script>
 export default {
   name: 'HomeInfo',
-  
+
   props: {
     message: {
       default: 'Welcome!',
