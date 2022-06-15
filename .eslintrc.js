@@ -12,9 +12,15 @@ module.exports = {
     jest: 'readonly',
   },
   parserOptions: {
-    parser: '@babel/eslint-parser',
+    parser: '@typescript-eslint/parser',
   },
-  extends: ['plugin:vue/recommended', 'eslint:recommended'],
+  plugins: ['@typescript-eslint'],
+  extends: [
+    'plugin:vue/recommended',
+    'eslint:recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
+    '@vue/typescript/recommended',
+  ],
   rules: {
     /**
      * Bad code that we want to know about
@@ -23,7 +29,8 @@ module.exports = {
     'no-param-reassign': 'error', // Don't allow reassignment of function parameters
     'no-return-assign': 'error', // Don't allow assignment in a return statement
     'require-await': 'error', // If it's declared async, then it must have await
-    'no-shadow': 'warn', // Warn of variables that are redeclared in enclosed scope (SonarQube treats these as errors) - we will want to tighten this up later
+    'no-shadow': 'off', // Deals with variables that are redeclared in enclosed scope
+    '@typescript-eslint/no-shadow': ['error'],
     'no-console': [ // Warn about console.log, console.trace etc.
       'warn',
       { allow: ['info', 'warn', 'error'] },

@@ -181,13 +181,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import initialData from '@/assets/initialQuestions.json'
 import NameEntry from '@/components/NameEntry.vue'
 import QuestionUpdates from '@/components/QuestionUpdates.vue'
+import Vue from 'vue'
 import { mapState, mapMutations } from 'vuex'
 
-export default {
+export default Vue.extend({
   name: 'EditView',
 
   components: {
@@ -293,7 +294,7 @@ export default {
       this.setNewQuestionList(this.unsavedQuestions)
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>
@@ -301,6 +302,7 @@ input:focus,
 select:focus {
   outline: none;
 }
+
 .loader {
   height: 24px;
   width: 24px;
@@ -311,18 +313,22 @@ select:focus {
   border-radius: 50%;
   animation: spin 2s linear infinite;
 }
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
 }
+
 #user-message {
   width: 90%;
   margin: 2em auto;
 }
+
 .start-add-question {
   display: flex;
   align-self: start;
@@ -332,16 +338,19 @@ select:focus {
   border: 1px solid #080825;
   color: #f5f5f5;
   font-size: 1em;
+
   &:hover {
     background-color: #229df5;
     border: 1px solid #b5b5b5;
   }
+
   &:active {
     background-color: #b5b5b5;
     border: 1px solid #229df5;
     color: #080825;
   }
 }
+
 .add-question-form {
   display: flex;
   flex-direction: column;
@@ -349,44 +358,53 @@ select:focus {
   margin: 0 auto 2em auto;
   border: 1px solid #080825;
   background-color: #f5f5f5;
+
   h3 {
     align-self: flex-start;
     width: fit-content;
     margin: 20px;
   }
+
   label {
     display: none;
   }
+
   select {
     width: 50%;
     margin: 0 20px 20px 20px;
     padding: 0.3em 0.6em;
   }
+
   .add-input-text {
     width: 80%;
     margin: 0 20px 20px 20px;
     padding: 0.3em 0.6em;
   }
+
   #multiple-choice-options {
     display: flex;
     flex-direction: column;
     width: 80%;
     margin: 0 20px 20px 20px;
+
     .multiple-choice-option-input {
       width: 40%;
       margin: 0 20px 20px 20px;
       padding: 0.3em 0.6em;
+
       &:last-of-type {
         margin-bottom: 0;
       }
     }
   }
+
   .add-form-buttons {
     align-self: flex-end;
     display: flex;
     justify-content: end;
     align-items: center;
     margin: 1em;
+
     input {
       padding: 0.3em 0.6em;
       background-color: #080825;
@@ -395,24 +413,29 @@ select:focus {
       font-size: 0.9em;
       color: #f5f5f5;
     }
+
     input[type="submit"] {
       margin-right: 1em;
+
       &:hover {
         background-color: #229df5;
         border: 1px solid #b5b5b5;
       }
+
       &:active {
         background-color: #b5b5b5;
         border: 1px solid #229df5;
         color: #080825;
       }
     }
+
     input[type="button"] {
       &:hover {
         background-color: #ff8888;
         border: 1px solid #a35656;
         color: #080825;
       }
+
       &:active {
         background-color: #b5b5b5;
         border: 1px solid #229df5;
@@ -421,24 +444,30 @@ select:focus {
     }
   }
 }
+
 .delete-update-question-form {
   margin: 0 0 2em 0;
+
   .question-wrapper {
     height: fit-content;
     width: 90%;
     margin: 0 auto;
     text-align: left;
+
     &:hover {
       opacity: 0.8;
     }
+
     .numbered-question {
       height: fit-content;
       width: 100%;
+
       .question-heading {
         height: fit-content;
         width: 100%;
         margin-left: -1px;
         border: 1px red solid;
+
         span {
           display: inline-block;
           width: 1em;
@@ -448,6 +477,7 @@ select:focus {
           color: white;
           text-align: center;
         }
+
         label {
           display: inline-block;
           width: calc(100% - 0.6em);
@@ -456,12 +486,14 @@ select:focus {
           background-color: white;
         }
       }
+
       .question-body {
         margin: 0 -1px;
         padding: 0.6em;
         background-color: #f5f5f5;
         border: 1px solid #b5b5b5;
         border-block: none;
+
         select,
         input {
           width: 40%;
@@ -470,6 +502,7 @@ select:focus {
           border: 1px solid #b5b5b5;
         }
       }
+
       .tool-bar {
         display: flex;
         justify-content: flex-end;
@@ -480,22 +513,27 @@ select:focus {
         border: 1px solid #080825;
         border-block: none;
         color: #f5f5f5;
+
         button {
           border: 1px solid #b5b5b5;
           border-radius: 2px;
         }
+
         .update-question {
           margin-right: 0.6em;
+
           &:hover {
             background-color: #229df5;
             border: 1px solid #b5b5b5;
           }
+
           &:active {
             background-color: #b5b5b5;
             border: 1px solid #229df5;
             color: #080825;
           }
         }
+
         .delete-question {
           &:hover {
             background-color: #ff8888;
@@ -503,6 +541,7 @@ select:focus {
 
             color: #080825;
           }
+
           &:active {
             background-color: #b5b5b5;
             border: 1px solid #229df5;
@@ -512,6 +551,7 @@ select:focus {
       }
     }
   }
+
   #save-changes {
     width: calc(90% + 2px);
     margin: 2em 0;
@@ -522,11 +562,13 @@ select:focus {
     color: #f5f5f5;
     font-size: 1.1em;
     font-weight: 600;
+
     &:hover {
       background-color: #ff8888;
       border: 1px solid #a35656;
       color: #080825;
     }
+
     &:active {
       background-color: #b5b5b5;
       border: 1px solid #229df5;

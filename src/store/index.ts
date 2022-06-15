@@ -2,12 +2,13 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import userInfo from '@/store/modules/userInfo'
 import questions from '@/store/modules/questions'
-import updateQuestions from './modules/updateQuestions.js'
+import updateQuestions from '@/store/modules/updateQuestions'
 import uiChangers from '@/store/modules/uiChangers'
+import { RootState } from '@/types/state/RootState'
 
 Vue.use(Vuex)
 
-const store = new Vuex.Store({
+const store = new Vuex.Store<RootState>({
   // state: {},
   // getters: {},
   // mutations: {},
@@ -23,10 +24,10 @@ const store = new Vuex.Store({
 if (module.hot) {
   // accept actions and mutations as hot modules
   module.hot.accept([
-    './modules/userInfo.js',
-    './modules/questions.js',
-    './modules/updateQuestions.js',
-    './modules/uiChangers.js',
+    './modules/userInfo.ts',
+    './modules/questions.ts',
+    './modules/updateQuestions.ts',
+    './modules/uiChangers.ts',
   ], () => {
     // require the updated modules and swap in the new actions and mutations
     console.info('Hot updating store modules')
@@ -35,10 +36,10 @@ if (module.hot) {
       // actions: require('./RootActions.js'),
       // mutations: require('./RootMutations.js'),
       modules: {
-        userInfo: require('./modules/userInfo.js').default,
-        questions: require('./modules/questions.js').default,
-        updateQuestions: require('./modules/updateQuestions.js').default,
-        uiChangers: require('./modules/uiChangers.js').default,
+        userInfo,
+        questions,
+        updateQuestions,
+        uiChangers,
       },
     })
   })

@@ -67,7 +67,7 @@
               required>
           </div>
           <div v-if="question.result"
-            :class="{correct: question.userRespondedCorrectly, incorrect: !question.userRespondedCorrectly}">
+            :class="{ correct: question.userRespondedCorrectly, incorrect: !question.userRespondedCorrectly }">
             {{ resultMessage(question.result) }}
           </div>
         </div>
@@ -85,8 +85,9 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import NameEntry from '@/components/NameEntry.vue'
+import Vue from 'vue'
 import { mapMutations, mapState } from 'vuex'
 
 //Two ways of retrieving data from a local .json file
@@ -94,7 +95,7 @@ import { mapMutations, mapState } from 'vuex'
 //import initialData from '@/assets/initialQuestions.json'
 //const initialData = require('@/assets/initialQuestions.json')
 
-export default {
+export default Vue.extend({
   name: 'QuizView',
 
   components: {
@@ -124,7 +125,9 @@ export default {
           if (this.sortingOrder === 'Alphabetical') {
             let questionA = a.question
             let questionB = b.question
-            return questionA.localeCompare(questionB, 'en', { sensitivity: 'base' })
+            return questionA.localeCompare(questionB, 'en', {
+              sensitivity: 'base',
+            })
           } else if (this.sortingOrder === 'Type') {
             let typeA = a.type
             let typeB = b.type
@@ -132,7 +135,9 @@ export default {
           } else if (this.sortingOrder === 'Results') {
             let resultA = a.result
             let resultB = b.result
-            return resultA.localeCompare(resultB, 'en', { sensitivity: 'base' })
+            return resultA.localeCompare(resultB, 'en', {
+              sensitivity: 'base',
+            })
           }
         })
       } else {
@@ -176,7 +181,9 @@ export default {
     markAnswers(submitEvent) {
       this.sortingOptions.push('Results')
       this.sortedQuestions.forEach(question => {
-        const answer = submitEvent.target.elements[`${question.answer}-${question.id}`].value
+        const answer =
+          submitEvent.target.elements[`${question.answer}-${question.id}`]
+            .value
         if (answer.toUpperCase() === question.answer.toUpperCase()) {
           question['result'] = 'correct'
           question['userRespondedCorrectly'] = true
@@ -209,7 +216,7 @@ export default {
       this.resetNameEntered()
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>
@@ -217,6 +224,7 @@ input:focus,
 select:focus {
   outline: none;
 }
+
 .loader {
   height: 24px;
   width: 24px;
@@ -227,18 +235,22 @@ select:focus {
   border-radius: 50%;
   animation: spin 2s linear infinite;
 }
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
 }
+
 #age-message {
   width: 90%;
   margin: 2em auto;
 }
+
 .sorting-wrapper {
   display: flex;
   flex-direction: row;
@@ -246,6 +258,7 @@ select:focus {
   width: 90%;
   margin: 2em auto 0 auto;
   font-size: 0.9em;
+
   .sorting-label {
     width: fit-content;
     padding: 0.3em 0.6em;
@@ -255,6 +268,7 @@ select:focus {
     border-inline-end: none;
     color: #f5f5f5;
   }
+
   .sorting-box {
     #sorting-options {
       margin-right: -1px;
@@ -264,24 +278,30 @@ select:focus {
     }
   }
 }
+
 form {
   margin: 0 0 2em 0;
+
   .question-wrapper {
     height: fit-content;
     width: 90%;
     margin: 0 auto;
     text-align: left;
+
     &:hover {
       opacity: 0.8;
     }
+
     .numbered-question {
       height: fit-content;
       width: 100%;
+
       .question-heading {
         height: fit-content;
         width: 100%;
         margin-left: -1px;
         border: 1px red solid;
+
         span {
           display: inline-block;
           width: 1em;
@@ -291,6 +311,7 @@ form {
           color: white;
           text-align: center;
         }
+
         label {
           display: inline-block;
           width: calc(100% - 0.6em);
@@ -299,12 +320,14 @@ form {
           background-color: white;
         }
       }
+
       .question-body {
         margin: 0 -1px;
         padding: 0.6em;
         background-color: #f5f5f5;
         border: 1px solid #b5b5b5;
         border-block: none;
+
         select,
         input {
           width: 40%;
@@ -313,17 +336,20 @@ form {
           border: 1px solid #b5b5b5;
         }
       }
+
       .correct,
       .incorrect {
         text-align: end;
         margin: 0 -1px;
         padding: 0.3em 0.6em;
       }
+
       .correct {
         background-color: #9cff88;
         border: 1px solid #6cb45d;
         border-block-end: none;
       }
+
       .incorrect {
         background-color: #ff8888;
         border: 1px solid #a35656;
@@ -331,6 +357,7 @@ form {
       }
     }
   }
+
   #submit-form,
   #reset-form {
     width: calc(90% + 2px);
@@ -343,23 +370,27 @@ form {
     font-size: 1.1em;
     font-weight: 600;
   }
+
   #submit-form {
     &:hover {
       background-color: #229df5;
       border: 1px solid #b5b5b5;
     }
+
     &:active {
       background-color: #b5b5b5;
       border: 1px solid #229df5;
       color: #080825;
     }
   }
+
   #reset-form {
     &:hover {
       background-color: #ff8888;
       border: 1px solid #a35656;
       color: #080825;
     }
+
     &:active {
       background-color: #b5b5b5;
       border: 1px solid #229df5;

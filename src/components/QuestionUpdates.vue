@@ -93,10 +93,17 @@
   </form>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { mapState, mapMutations } from 'vuex'
+import { QuestionTypes } from '@/enums/QuestionTypes'
+import { ChoiceQuestion } from '@/types/question_types/ChoiceQuestion'
+import { TypeQuestion } from '@/types/question_types/TypeQuestion'
+import { RootState } from '@/types/state/RootState'
 
-export default {
+type questionTypeObject = { [index: string]: string }
+
+export default Vue.extend({
   name: 'QuestionUpdates',
 
   props: {
@@ -109,42 +116,44 @@ export default {
 
   data() {
     return {
-      questionTypeToUpdate: this.selected.type,
+      questionTypeToUpdate: this.selected.type as QuestionTypes,
       questionTypes: [
         { 'multiple-choice': 'Multiple choice' },
         { 'type-a-word': 'Type a word' },
-      ],
-      questionToUpdate: this.selected.question,
-      optionOne: '',
-      optionTwo: '',
-      optionThree: '',
-      optionFour: '',
-      updatedValueType: this.selected.valueType,
-      updatedPlaceholder: this.selected.placeholder,
-      updatedAnswer: this.selected.answer,
+      ] as questionTypeObject[],
+      questionToUpdate: this.selected.question as string,
+      optionOne: '' as string,
+      optionTwo: '' as string,
+      optionThree: '' as string,
+      optionFour: '' as string,
+      updatedValueType: this.selected.valueType as ChoiceQuestion['valueType'],
+      updatedPlaceholder: this.selected.placeholder as TypeQuestion['placeholder'],
+      updatedAnswer: this.selected.answer as (TypeQuestion['answer'] | ChoiceQuestion['answer']),
     }
   },
 
   computed: {
     ...mapState({
-      idsToBeUpdated: state => state.updateQuestions.idsToBeUpdated,
-      userName: state => state.userInfo.userName,
+      idsToBeUpdated: (state): number[] => (state as RootState).updateQuestions.idsToBeUpdated,
+      userName: (state): string => (state as RootState).userInfo.userName,
     }),
   },
 
   methods: {
-    ...mapMutations('updateQuestions', ['addQuestionToBeUpdated']),
     ...mapMutations('updateQuestions', ['removeId']),
-    updateQuestion() {
-      let updatedQuestion = {}
-      let updatedOptionsToBeChecked = [this.optionOne, this.optionTwo, this.optionThree, this.optionFour]
-      if (this.questionTypeToUpdate === 'multiple-choice') {
+    /**
+     * Updates a question
+     */
+    updateQuestion(): void {
+      let updatedQuestion: TypeQuestion | ChoiceQuestion | undefined
+      let updatedOptionsToBeChecked: string[] = [this.optionOne, this.optionTwo, this.optionThree, this.optionFour]
+      if (this.questionTypeToUpdate === QuestionTypes.multipleChoice) {
         if (!updatedOptionsToBeChecked.includes(this.updatedAnswer)) {
           alert(`Very funny ${this.userName}, none of your options matches your answer!`)
         } else
           updatedQuestion = {
             id: this.selected.id,
-            type: 'multiple-choice',
+            type: QuestionTypes.multipleChoice,
             question: this.questionToUpdate,
             options: [
               this.optionOne,
@@ -155,10 +164,10 @@ export default {
             answer: this.updatedAnswer,
             valueType: this.updatedValueType,
           }
-      } else if (this.questionTypeToUpdate === 'type-a-word') {
+      } else if (this.questionTypeToUpdate === QuestionTypes.typeAWord) {
         updatedQuestion = {
           id: this.selected.id,
-          type: 'type-a-word',
+          type: QuestionTypes.typeAWord,
           question: this.questionToUpdate,
           placeholder: this.updatedPlaceholder,
           answer: this.updatedAnswer,
@@ -166,15 +175,20 @@ export default {
       } else {
         alert('Please select a valid question type')
       }
-      // this.addQuestionToBeUpdated(updatedQuestion)
       this.$emit('update-question-list', updatedQuestion)
+      console.log(updatedQuestion) // eslint-disable-line
       this.removeId(updatedQuestion)
     },
-    cancelUpdate(question) {
+    /**
+     * Cancels the process of updation a question
+     * @param question - The question that was in the process of being updated
+     */
+    cancelUpdate(question: ChoiceQuestion | TypeQuestion): void {
+      console.log(question) // eslint-disable-line
       this.removeId(question)
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>
@@ -186,39 +200,47 @@ export default {
   border: 1px solid #b5b5b5;
   border-block: none;
   background-color: #229df5;
+
   label {
     display: none;
   }
+
   select {
     width: 50%;
     margin: 20px;
     padding: 0.3em 0.6em;
   }
+
   .update-input-text {
     width: 80%;
     margin: 0 20px 20px 20px;
     padding: 0.3em 0.6em;
   }
+
   #multiple-choice-options {
     display: flex;
     flex-direction: column;
     width: 80%;
     margin: 0 20px 20px 20px;
+
     .multiple-choice-option-input {
       width: 40%;
       margin: 0 20px 20px 20px;
       padding: 0.3em 0.6em;
+
       &:last-of-type {
         margin-bottom: 0;
       }
     }
   }
+
   .update-form-buttons {
     align-self: flex-end;
     display: flex;
     justify-content: end;
     align-items: center;
     margin: 1em;
+
     input {
       padding: 0.3em 0.6em;
       background-color: #080825;
@@ -227,25 +249,30 @@ export default {
       font-size: 0.9em;
       color: #f5f5f5;
     }
+
     input[type="submit"] {
       margin-right: 1em;
+
       &:hover {
         background-color: #22f5ab;
         border: 1px solid #b5b5b5;
         color: #080825;
       }
+
       &:active {
         background-color: #b5b5b5;
         border: 1px solid #229df5;
         color: #080825;
       }
     }
+
     input[type="button"] {
       &:hover {
         background-color: #ff8888;
         border: 1px solid #a35656;
         color: #080825;
       }
+
       &:active {
         background-color: #b5b5b5;
         border: 1px solid #229df5;

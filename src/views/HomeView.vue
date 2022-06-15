@@ -6,15 +6,16 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 // @ is an alias to /src
 import HomeInfo from '@/components/HomeInfo.vue'
+import Vue from 'vue'
 
-export default {
+export default Vue.extend({
   name: 'HomeView',
-  
+
   components: {
     'home-info': HomeInfo,
   },
-}
+})
 </script>

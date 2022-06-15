@@ -14,10 +14,11 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { mapActions, mapMutations } from 'vuex'
 
-export default {
+export default Vue.extend({
   name: 'NameEntry',
 
   props: {
@@ -35,35 +36,41 @@ export default {
 
   data() {
     return {
-      inputName: '',
+      inputName: '' as string,
     }
   },
-  
+
   methods: {
     ...mapActions('userInfo', ['registerName', 'fetchAge']),
     ...mapMutations('uiChangers', ['setUserEnteredName']),
-    handleNameEntry() {
+    /**
+     * Handles the user's entry of their name
+     */
+    handleNameEntry(): void {
       this.registerName(this.inputName)
       this.setUserEnteredName(true)
       this.fetchAge(this.inputName)
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>
 h2 {
   margin: 1em auto;
 }
+
 input {
   margin: 0 auto 0 auto;
   padding: 0.3em 0.6em;
   border: 1px solid #080825;
   border-radius: 0;
   outline: none;
+
   &[type="submit"] {
     background-color: #080825;
     color: #f5f5f5;
+
     &:hover {
       background-color: #229df5;
     }

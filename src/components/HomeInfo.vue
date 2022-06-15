@@ -19,8 +19,10 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+
+export default Vue.extend({
   name: 'HomeInfo',
 
   props: {
@@ -29,7 +31,7 @@ export default {
       type: String,
     },
   },
-}
+})
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -38,16 +40,20 @@ p {
   max-width: 700px;
   margin-inline: auto;
 }
+
 h2 {
   margin: 40px 0 0;
 }
+
 ul {
   list-style-type: none;
   padding: 0;
 }
+
 li {
   margin: 10px 0;
 }
+
 a {
   color: red;
 }
