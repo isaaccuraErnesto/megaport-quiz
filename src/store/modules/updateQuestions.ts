@@ -1,6 +1,6 @@
 import { UpdateQuestionsState } from '@/types/state/UpdateQuestionsState'
-import { TypeQuestion } from '@/types/question_types/TypeQuestion'
-import { ChoiceQuestion } from '@/types/question_types/ChoiceQuestion'
+import { TypeQuestion } from '@/types/questions/TypeQuestion'
+import { ChoiceQuestion } from '@/types/questions/ChoiceQuestion'
 
 const state: UpdateQuestionsState = {
   idsToBeUpdated: [],

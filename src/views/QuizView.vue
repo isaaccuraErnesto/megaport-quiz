@@ -86,9 +86,13 @@
 </template>
 
 <script lang="ts">
-import NameEntry from '@/components/NameEntry.vue'
 import Vue from 'vue'
 import { mapMutations, mapState } from 'vuex'
+import NameEntry from '@/components/NameEntry.vue'
+import { RootState } from '@/types/state/RootState'
+import { TypeQuestion } from '@/types/questions/TypeQuestion'
+import { ChoiceQuestion } from '@/types/questions/ChoiceQuestion'
+import { QuestionResult } from '@/enums/QuestionResult'
 
 //Two ways of retrieving data from a local .json file
 
@@ -113,13 +117,13 @@ export default Vue.extend({
 
   computed: {
     ...mapState({
-      userName: state => state.userInfo.userName,
-      userAge: state => state.userInfo.userAge,
-      questions: state => state.questions.questions,
-      nameEntered: state => state.uiChangers.nameEntered,
-      loading: state => state.uiChangers.agifyLoading,
+      userName: (state): string => (state as RootState).userInfo.userName,
+      userAge: (state): number | null => (state as RootState).userInfo.userAge,
+      questions: (state): (TypeQuestion | ChoiceQuestion)[] => (state as RootState).questions.questions,
+      nameEntered: (state): boolean => (state as RootState).uiChangers.nameEntered,
+      loading: (state): boolean => (state as RootState).uiChangers.agifyLoading,
     }),
-    sortedQuestions() {
+    sortedQuestions(): (TypeQuestion | ChoiceQuestion)[] {
       if (this.sortingOrder !== 'Default') {
         return this.questions.slice().sort((a, b) => {
           if (this.sortingOrder === 'Alphabetical') {
@@ -133,21 +137,23 @@ export default Vue.extend({
             let typeB = b.type
             return typeA.localeCompare(typeB, 'en', { sensitivity: 'base' })
           } else if (this.sortingOrder === 'Results') {
-            let resultA = a.result
-            let resultB = b.result
+            let resultA = a.result as string
+            let resultB = b.result as string
             return resultA.localeCompare(resultB, 'en', {
               sensitivity: 'base',
             })
+          } else {
+            return 0
           }
         })
       } else {
         return this.questions
       }
     },
-    userAgeString() {
-      if (this.userAge > 40) {
+    userAgeString(): string {
+      if (this.userAge as number > 40) {
         return `Well ${this.userName}, no pressure but at ${this.userAge} we expect you to be full of wisdom!`
-      } else if (this.userAge > 25) {
+      } else if (this.userAge as number > 25) {
         return `Oh ${this.userName}, you are only ${this.userAge}! Had you said that earlier, we would have chosen easier questions!`
       } else {
         return `${this.userName}, I think at ${this.userAge} you are too young to take this quiz but why don't you prove me wrong?`
@@ -178,31 +184,42 @@ export default Vue.extend({
   methods: {
     ...mapMutations('userInfo', ['resetUserInfo']),
     ...mapMutations('uiChangers', ['resetNameEntered']),
-    markAnswers(submitEvent) {
+    /**
+     * It marks the answers submitted by the user
+     * @param submitEvent - The event object containing all necessary information from the form
+     */
+    markAnswers(submitEvent: Event): void {
+      const target = submitEvent.target as HTMLFormElement
+      const elements = target.elements
       this.sortingOptions.push('Results')
       this.sortedQuestions.forEach(question => {
-        const answer =
-          submitEvent.target.elements[`${question.answer}-${question.id}`]
-            .value
+        const answer = (elements.namedItem(`${question.answer}-${question.id}`) as HTMLInputElement).value
         if (answer.toUpperCase() === question.answer.toUpperCase()) {
-          question['result'] = 'correct'
+          question['result'] = QuestionResult.correct
           question['userRespondedCorrectly'] = true
         } else {
-          question['result'] = 'incorrect'
+          question['result'] = QuestionResult.incorrect
           question['userRespondedCorrectly'] = false
         }
       })
       this.answersSubmitted = true
     },
-    resultMessage(result) {
-      if (result === 'correct') {
+    /**
+     * Renders a result message in the UI notifying the user whether their responses were correct or not
+     * @param result - The result to the answer to a question
+     */
+    resultMessage(result: string): string {
+      if (result === QuestionResult.correct) {
         return 'Lucky guess!'
-      } else if (result === 'incorrect') {
+      } else if (result === QuestionResult.incorrect) {
         return `This ain't right!`
       } else {
         return `We don't even know the answer ourselves!`
       }
     },
+    /**
+     * Resets the quiz
+     */
     resetForm() {
       for (let i = 0; i < this.sortedQuestions.length; i++) {
         delete this.sortedQuestions[i]['result']

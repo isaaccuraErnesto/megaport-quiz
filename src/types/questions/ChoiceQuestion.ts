@@ -7,4 +7,6 @@ export interface ChoiceQuestion {
   options: string[]
   answer: string
   valueType: string
+  result?: string
+  userRespondedCorrectly?: boolean
 }

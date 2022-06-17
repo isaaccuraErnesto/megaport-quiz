@@ -1,6 +1,6 @@
 import * as initialData from '@/assets/initialQuestions.json'
-import { ChoiceQuestion } from '@/types/question_types/ChoiceQuestion'
-import { TypeQuestion } from '@/types/question_types/TypeQuestion'
+import { ChoiceQuestion } from '@/types/questions/ChoiceQuestion'
+import { TypeQuestion } from '@/types/questions/TypeQuestion'
 import { QuestionsState } from '@/types/state/QuestionsState'
 
 const initialQuestions = initialData.questions as (ChoiceQuestion | TypeQuestion)[]

@@ -120,7 +120,7 @@
           type="button"
           class="cancel-add-question"
           value="Cancel"
-          @click.prevent="cancelAdd">
+          @click.prevent="clearAddData">
       </div>
     </form>
     <form v-if="nameEntered"
@@ -182,11 +182,16 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
+import { mapState, mapMutations } from 'vuex'
 import initialData from '@/assets/initialQuestions.json'
 import NameEntry from '@/components/NameEntry.vue'
 import QuestionUpdates from '@/components/QuestionUpdates.vue'
-import Vue from 'vue'
-import { mapState, mapMutations } from 'vuex'
+import { QuestionTypes } from '@/enums/QuestionTypes'
+import { QuestionTypeObject } from '@/types/questions/QuestionTypeObject'
+import { ChoiceQuestion } from '@/types/questions/ChoiceQuestion'
+import { TypeQuestion } from '@/types/questions/TypeQuestion'
+import { RootState } from '@/types/state/RootState'
 
 export default Vue.extend({
   name: 'EditView',
@@ -198,74 +203,91 @@ export default Vue.extend({
 
   data() {
     return {
-      unsavedQuestions: initialData.questions,
-      userWantsToAddQuestion: false,
+      unsavedQuestions: initialData.questions as (TypeQuestion | ChoiceQuestion)[],
+      userWantsToAddQuestion: false as boolean,
       questionTypeToAdd: undefined,
       questionTypes: [
         { 'multiple-choice': 'Multiple choice' },
         { 'type-a-word': 'Type a word' },
-      ],
-      newQuestion: '',
-      optionOne: '',
-      optionTwo: '',
-      optionThree: '',
-      optionFour: '',
-      newValueType: '',
-      newPlaceholder: '',
-      newAnswer: '',
+      ] as QuestionTypeObject[],
+      newQuestion: '' as string,
+      optionOne: '' as string,
+      optionTwo: '' as string,
+      optionThree: '' as string,
+      optionFour: '' as string,
+      newValueType: '' as ChoiceQuestion['valueType'],
+      newPlaceholder: '' as TypeQuestion['placeholder'],
+      newAnswer: '' as (TypeQuestion['answer'] | ChoiceQuestion['answer']),
     }
   },
 
   computed: {
     ...mapState({
-      userName: state => state.userInfo.userName,
-      questions: state => state.questions.questions,
-      nameEntered: state => state.uiChangers.nameEntered,
-      loading: state => state.uiChangers.agifyLoading,
-      idsToBeUpdated: state => state.updateQuestions.idsToBeUpdated,
+      userName: (state): string => (state as RootState).userInfo.userName,
+      questions: (state): (TypeQuestion | ChoiceQuestion)[] => (state as RootState).questions.questions,
+      nameEntered: (state): boolean => (state as RootState).uiChangers.nameEntered,
+      loading: (state): boolean => (state as RootState).uiChangers.agifyLoading,
+      idsToBeUpdated: (state): number[] => (state as RootState).updateQuestions.idsToBeUpdated,
     }),
   },
 
   methods: {
     ...mapMutations('updateQuestions', ['addId']),
     ...mapMutations('questions', ['setNewQuestionList']),
-    deleteQuestion(deleteThisId) {
+    /**
+     * Removes the question from the UI but doesn't change the question list in the store
+     * @param deleteThisId - The id of the question to be deleted
+     */
+    deleteQuestion(deleteThisId: number): void {
       this.unsavedQuestions = this.unsavedQuestions.filter(question => question.id !== deleteThisId)
     },
-    showAddQuestionForm() {
+    /**
+     * Registers the user's desire to add a new question, which is then used to render a form in the UI
+     */
+    showAddQuestionForm(): void {
       this.userWantsToAddQuestion = true
     },
-    addQuestion(e) {
-      let elements = e.target.elements
-      if (this.questionTypeToAdd === 'type-a-word') {
+    /**
+     * Adds a question to the list of questions in the UI but doesn't change the question list in the store
+     * @param e - The event object containing all necessary information from the form
+     */
+    addQuestion(e: Event): void {
+      const target = e.target as HTMLFormElement
+      const elements = target.elements
+      if (this.questionTypeToAdd === QuestionTypes.typeAWord) {
         this.unsavedQuestions.unshift({
           id: this.unsavedQuestions.length + 1,
-          type: 'type-a-word',
-          question: elements.questionToAdd.value,
-          placeholder: elements.newQuestionPlaceholder.value,
-          answer: elements.answerToQuestionToAdd.value,
+          type: QuestionTypes.typeAWord,
+          question: (elements.namedItem('questionToAdd') as HTMLInputElement).value,
+          placeholder: (elements.namedItem('newQuestionPlaceholder') as HTMLInputElement).value,
+          answer: (elements.namedItem('answerToQuestionToAdd') as HTMLInputElement).value,
         })
-      } else if (this.questionTypeToAdd === 'multiple-choice') {
+      } else if (this.questionTypeToAdd === QuestionTypes.multipleChoice) {
         this.unsavedQuestions.unshift({
           id: this.unsavedQuestions.length + 1,
-          type: 'multiple-choice',
-          question: elements.questionToAdd.value,
-          options: [elements.optionOne.value, elements.optionTwo.value, elements.optionThree.value, elements.optionFour.value],
-          answer: elements.answerToQuestionToAdd.value,
-          valueType: elements.newValueType.value.toLowerCase(),
+          type: QuestionTypes.multipleChoice,
+          question: (elements.namedItem('questionToAdd') as HTMLInputElement).value,
+          options: [
+            (elements.namedItem('optionOne') as HTMLInputElement).value,
+            (elements.namedItem('optionTwo') as HTMLInputElement).value,
+            (elements.namedItem('optionThree') as HTMLInputElement).value,
+            (elements.namedItem('optionFour') as HTMLInputElement).value,
+          ],
+          answer: (elements.namedItem('answerToQuestionToAdd') as HTMLInputElement).value,
+          valueType: (elements.namedItem('newValueType') as HTMLInputElement).value.toLowerCase(),
         })
+        if (!(this.unsavedQuestions[0] as ChoiceQuestion).options.includes(this.unsavedQuestions[0].answer)) {
+          alert(`Very funny ${this.userName}, none of your options matches your answer!`)
+          this.unsavedQuestions.shift() ?? undefined
+          return
+        }
       }
-      this.newQuestion = ''
-      this.optionOne = ''
-      this.optionTwo = ''
-      this.optionThree = ''
-      this.optionFour = ''
-      this.newValueType = ''
-      this.newPlaceholder = ''
-      this.newAnswer = ''
-      this.userWantsToAddQuestion = false
+      this.clearAddData()
     },
-    cancelAdd() {
+    /**
+     * Clears the data related to the process of provisionally adding a question
+     */
+    clearAddData() {
       this.userWantsToAddQuestion = false
       this.questionTypeToAdd = undefined
       this.newQuestion = ''
@@ -277,17 +299,23 @@ export default Vue.extend({
       this.newPlaceholder = ''
       this.newAnswer = ''
     },
-    toggleUpdatePanel(id) {
+    /**
+     * Toggles the rendering of the update panel for the question linked to the passed in id
+     * @param id - Id of the question to be updated
+     */
+    toggleUpdatePanel(id: number): void {
       this.addId(id)
     },
-    updateQuestionList(updatedQuestion) {
-      let updatedIndex = null
-      this.unsavedQuestions.forEach((question, index) => {
+    /**
+     * Updates the provisional list of questions once a question has been updated
+     * @param updatedQuestion
+     */
+    updateQuestionList(updatedQuestion: TypeQuestion | ChoiceQuestion): void {
+      this.unsavedQuestions.forEach((question, index): void => {
         if (question.id === updatedQuestion.id) {
-          updatedIndex = index
+          this.unsavedQuestions[index] = updatedQuestion
         }
       })
-      this.unsavedQuestions[updatedIndex] = updatedQuestion
     },
     registerChanges() {
       alert('Your changes have been registered successfully!')

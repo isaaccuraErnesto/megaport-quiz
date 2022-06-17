@@ -97,11 +97,10 @@
 import Vue from 'vue'
 import { mapState, mapMutations } from 'vuex'
 import { QuestionTypes } from '@/enums/QuestionTypes'
-import { ChoiceQuestion } from '@/types/question_types/ChoiceQuestion'
-import { TypeQuestion } from '@/types/question_types/TypeQuestion'
+import { QuestionTypeObject } from '@/types/questions/QuestionTypeObject'
+import { ChoiceQuestion } from '@/types/questions/ChoiceQuestion'
+import { TypeQuestion } from '@/types/questions/TypeQuestion'
 import { RootState } from '@/types/state/RootState'
-
-type questionTypeObject = { [index: string]: string }
 
 export default Vue.extend({
   name: 'QuestionUpdates',
@@ -120,7 +119,7 @@ export default Vue.extend({
       questionTypes: [
         { 'multiple-choice': 'Multiple choice' },
         { 'type-a-word': 'Type a word' },
-      ] as questionTypeObject[],
+      ] as QuestionTypeObject[],
       questionToUpdate: this.selected.question as string,
       optionOne: '' as string,
       optionTwo: '' as string,
@@ -150,7 +149,8 @@ export default Vue.extend({
       if (this.questionTypeToUpdate === QuestionTypes.multipleChoice) {
         if (!updatedOptionsToBeChecked.includes(this.updatedAnswer)) {
           alert(`Very funny ${this.userName}, none of your options matches your answer!`)
-        } else
+          return
+        } else {
           updatedQuestion = {
             id: this.selected.id,
             type: QuestionTypes.multipleChoice,
@@ -164,6 +164,7 @@ export default Vue.extend({
             answer: this.updatedAnswer,
             valueType: this.updatedValueType,
           }
+        }
       } else if (this.questionTypeToUpdate === QuestionTypes.typeAWord) {
         updatedQuestion = {
           id: this.selected.id,
@@ -176,7 +177,6 @@ export default Vue.extend({
         alert('Please select a valid question type')
       }
       this.$emit('update-question-list', updatedQuestion)
-      console.log(updatedQuestion) // eslint-disable-line
       this.removeId(updatedQuestion)
     },
     /**
@@ -184,7 +184,6 @@ export default Vue.extend({
      * @param question - The question that was in the process of being updated
      */
     cancelUpdate(question: ChoiceQuestion | TypeQuestion): void {
-      console.log(question) // eslint-disable-line
       this.removeId(question)
     },
   },

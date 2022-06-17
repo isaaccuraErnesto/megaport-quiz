@@ -6,4 +6,6 @@ export interface TypeQuestion {
   question: string
   placeholder: string
   answer: string
+  result?: string
+  userRespondedCorrectly?: boolean
 }
