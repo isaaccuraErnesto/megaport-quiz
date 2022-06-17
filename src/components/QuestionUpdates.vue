@@ -94,7 +94,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import { mapState, mapMutations } from 'vuex'
 import { QuestionTypes } from '@/enums/QuestionTypes'
 import { QuestionTypeObject } from '@/types/questions/QuestionTypeObject'
@@ -108,7 +108,7 @@ export default Vue.extend({
   props: {
     selected: {
       default: null,
-      type: Object,
+      type: Object as PropType<TypeQuestion | ChoiceQuestion>,
       required: true,
     },
   },
@@ -125,8 +125,8 @@ export default Vue.extend({
       optionTwo: '' as string,
       optionThree: '' as string,
       optionFour: '' as string,
-      updatedValueType: this.selected.valueType as ChoiceQuestion['valueType'],
-      updatedPlaceholder: this.selected.placeholder as TypeQuestion['placeholder'],
+      updatedValueType: (this.selected as ChoiceQuestion).valueType as ChoiceQuestion['valueType'],
+      updatedPlaceholder: (this.selected as TypeQuestion).placeholder as TypeQuestion['placeholder'],
       updatedAnswer: this.selected.answer as (TypeQuestion['answer'] | ChoiceQuestion['answer']),
     }
   },

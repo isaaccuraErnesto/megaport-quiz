@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import { mapActions, mapMutations } from 'vuex'
 
 export default Vue.extend({
@@ -24,12 +24,12 @@ export default Vue.extend({
   props: {
     message: {
       default: 'Megaquiz',
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     inputValue: {
       default: 'Submit',
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
   },
