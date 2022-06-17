@@ -193,6 +193,7 @@ import { ChoiceQuestion } from '@/types/questions/ChoiceQuestion'
 import { TypeQuestion } from '@/types/questions/TypeQuestion'
 import { RootState } from '@/types/state/RootState'
 
+//Test
 export default Vue.extend({
   name: 'EditView',
 
