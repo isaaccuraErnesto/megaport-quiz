@@ -192,6 +192,7 @@ import { QuestionTypeObject } from '@/types/questions/QuestionTypeObject'
 import { ChoiceQuestion } from '@/types/questions/ChoiceQuestion'
 import { TypeQuestion } from '@/types/questions/TypeQuestion'
 import { RootState } from '@/types/state/RootState'
+// import hasKey from '@/helpers'
 
 //Test
 export default Vue.extend({
@@ -205,20 +206,20 @@ export default Vue.extend({
   data() {
     return {
       unsavedQuestions: initialData.questions as (TypeQuestion | ChoiceQuestion)[],
-      userWantsToAddQuestion: false as boolean,
-      questionTypeToAdd: undefined,
+      userWantsToAddQuestion: false,
+      questionTypeToAdd: undefined as string | undefined,
       questionTypes: [
         { 'multiple-choice': 'Multiple choice' },
         { 'type-a-word': 'Type a word' },
       ] as QuestionTypeObject[],
-      newQuestion: '' as string,
-      optionOne: '' as string,
-      optionTwo: '' as string,
-      optionThree: '' as string,
-      optionFour: '' as string,
-      newValueType: '' as ChoiceQuestion['valueType'],
-      newPlaceholder: '' as TypeQuestion['placeholder'],
-      newAnswer: '' as (TypeQuestion['answer'] | ChoiceQuestion['answer']),
+      newQuestion: undefined as string | undefined,
+      optionOne: undefined as string | undefined,
+      optionTwo: undefined as string | undefined,
+      optionThree: undefined as string | undefined,
+      optionFour: undefined as string | undefined,
+      newValueType: undefined as string | undefined,
+      newPlaceholder: undefined as string | undefined,
+      newAnswer: undefined as string | undefined,
     }
   },
 
@@ -288,17 +289,15 @@ export default Vue.extend({
     /**
      * Clears the data related to the process of provisionally adding a question
      */
-    clearAddData() {
-      this.userWantsToAddQuestion = false
-      this.questionTypeToAdd = undefined
-      this.newQuestion = ''
-      this.optionOne = ''
-      this.optionTwo = ''
-      this.optionThree = ''
-      this.optionFour = ''
-      this.newValueType = ''
-      this.newPlaceholder = ''
-      this.newAnswer = ''
+    clearAddData(): void {
+      const { _data } = this as any // eslint-disable-line
+      for (let prop in _data) {
+        if (prop === 'userWantsToAddQuestion') {
+          this.userWantsToAddQuestion = false
+        } else if (prop !== 'unsavedQuestions' && prop !== 'questionTypes') {
+          _data[prop] = undefined
+        }
+      }
     },
     /**
      * Toggles the rendering of the update panel for the question linked to the passed in id
@@ -318,7 +317,7 @@ export default Vue.extend({
         }
       })
     },
-    registerChanges() {
+    registerChanges(): void {
       alert('Your changes have been registered successfully!')
       this.setNewQuestionList(this.unsavedQuestions)
     },

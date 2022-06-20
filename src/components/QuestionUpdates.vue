@@ -120,14 +120,14 @@ export default Vue.extend({
         { 'multiple-choice': 'Multiple choice' },
         { 'type-a-word': 'Type a word' },
       ] as QuestionTypeObject[],
-      questionToUpdate: this.selected.question as string,
-      optionOne: '' as string,
-      optionTwo: '' as string,
-      optionThree: '' as string,
-      optionFour: '' as string,
-      updatedValueType: '' as ChoiceQuestion['valueType'],
-      updatedPlaceholder: '' as TypeQuestion['placeholder'],
-      updatedAnswer: this.selected.answer as (TypeQuestion['answer'] | ChoiceQuestion['answer']),
+      questionToUpdate: undefined as string | undefined,
+      optionOne: undefined as string | undefined,
+      optionTwo: undefined as string | undefined,
+      optionThree: undefined as string | undefined,
+      optionFour: undefined as string | undefined,
+      updatedValueType: undefined as string | undefined,
+      updatedPlaceholder: undefined as string | undefined,
+      updatedAnswer: undefined as string | undefined,
     }
   },
 
@@ -157,33 +157,33 @@ export default Vue.extend({
      */
     updateQuestion(): void {
       let updatedQuestion: TypeQuestion | ChoiceQuestion | undefined
-      let updatedOptionsToBeChecked: string[] = [this.optionOne, this.optionTwo, this.optionThree, this.optionFour]
+      let updatedOptionsToBeChecked: string[] = [this.optionOne as string, this.optionTwo as string, this.optionThree as string, this.optionFour as string]
       if (this.questionTypeToUpdate === QuestionTypes.multipleChoice) {
-        if (!updatedOptionsToBeChecked.includes(this.updatedAnswer)) {
+        if (!updatedOptionsToBeChecked.includes(this.updatedAnswer as string)) {
           alert(`Very funny ${this.userName}, none of your options matches your answer!`)
           return
         } else {
           updatedQuestion = {
             id: this.selected.id,
             type: QuestionTypes.multipleChoice,
-            question: this.questionToUpdate,
+            question: this.questionToUpdate as string,
             options: [
               this.optionOne,
               this.optionTwo,
               this.optionThree,
               this.optionFour,
-            ],
-            answer: this.updatedAnswer,
-            valueType: this.updatedValueType,
+            ] as string[],
+            answer: this.updatedAnswer as string,
+            valueType: this.updatedValueType as string,
           }
         }
       } else if (this.questionTypeToUpdate === QuestionTypes.typeAWord) {
         updatedQuestion = {
           id: this.selected.id,
           type: QuestionTypes.typeAWord,
-          question: this.questionToUpdate,
-          placeholder: this.updatedPlaceholder,
-          answer: this.updatedAnswer,
+          question: this.questionToUpdate as string,
+          placeholder: this.updatedPlaceholder as string,
+          answer: this.updatedAnswer as string,
         }
       } else {
         alert('Please select a valid question type')
