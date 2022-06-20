@@ -178,6 +178,14 @@ export default Vue.extend({
   //   },
   // },
 
+  beforeMount() {
+    for (let i = 0; i < this.sortedQuestions.length; i++) {
+      delete this.sortedQuestions[i]['result']
+      delete this.sortedQuestions[i]['userRespondedCorrectly']
+    }
+    this.answersSubmitted = false
+  },
+
   methods: {
     ...mapMutations('userInfo', ['resetUserInfo']),
     ...mapMutations('uiChangers', ['resetNameEntered']),

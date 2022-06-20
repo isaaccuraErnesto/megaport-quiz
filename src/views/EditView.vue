@@ -170,8 +170,8 @@
             </button>
           </div>
         </div>
-        <question-updates :selected="question"
-          :options="'options' in question ? question.options : undefined"
+        <question-updates v-if="idsToBeUpdated.includes(question.id)"
+          :selected="question"
           @update-question-list="updateQuestionList" />
       </div>
       <input id="save-changes"

@@ -125,8 +125,8 @@ export default Vue.extend({
       optionTwo: '' as string,
       optionThree: '' as string,
       optionFour: '' as string,
-      updatedValueType: (this.selected as ChoiceQuestion).valueType as ChoiceQuestion['valueType'],
-      updatedPlaceholder: (this.selected as TypeQuestion).placeholder as TypeQuestion['placeholder'],
+      updatedValueType: '' as ChoiceQuestion['valueType'],
+      updatedPlaceholder: '' as TypeQuestion['placeholder'],
       updatedAnswer: this.selected.answer as (TypeQuestion['answer'] | ChoiceQuestion['answer']),
     }
   },
@@ -136,6 +136,18 @@ export default Vue.extend({
       idsToBeUpdated: (state): number[] => (state as RootState).updateQuestions.idsToBeUpdated,
       userName: (state): string => (state as RootState).userInfo.userName,
     }),
+  },
+
+  beforeMount() {
+    if ('options' in this.selected) {
+      this.optionOne = this.selected.options[0]
+      this.optionTwo = this.selected.options[1]
+      this.optionThree = this.selected.options[2]
+      this.optionFour = this.selected.options[3]
+      this.updatedValueType = this.selected.valueType
+    } else if ('placeholder' in this.selected) {
+      this.updatedPlaceholder = this.selected.placeholder
+    }
   },
 
   methods: {
