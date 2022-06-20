@@ -40,10 +40,9 @@
               {{ question.question }}
             </label>
           </div>
-          <div v-if="question.type === 'multiple-choice'"
+          <div v-if="'options' in question"
             class="question-body">
             <select :id="`${question.answer}-${question.id}`"
-              v-model="userAnswers[`question-${question.id}`]"
               :name="`${question.answer}-${question.id}`"
               required>
               <option :value="undefined"
@@ -60,8 +59,7 @@
           </div>
           <div v-else
             class="question-body">
-            <input v-model="userAnswers[`question-${question.id}`]"
-              type="text"
+            <input type="text"
               :placeholder="question.placeholder"
               :name="`${question.answer}-${question.id}`"
               required>
@@ -111,7 +109,6 @@ export default Vue.extend({
       sortingOptions: ['Default', 'Alphabetical', 'Type'],
       sortingOrder: 'Default',
       answersSubmitted: false,
-      userAnswers: {},
     }
   },
 
@@ -228,7 +225,6 @@ export default Vue.extend({
       this.sortingOptions.pop()
       this.sortingOrder = 'Default'
       this.answersSubmitted = false
-      this.userAnswers = {}
       this.resetUserInfo()
       this.resetNameEntered()
     },

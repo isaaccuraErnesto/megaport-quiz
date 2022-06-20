@@ -136,7 +136,7 @@
               {{ question.question }}
             </label>
           </div>
-          <div v-if="question.type === 'multiple-choice'"
+          <div v-if="'options' in question"
             class="question-body">
             <select :id="`${question.answer}-${question.id}`"
               :name="`${question.answer}-${question.id}`">
@@ -171,7 +171,7 @@
           </div>
         </div>
         <question-updates :selected="question"
-          :options="question.options"
+          :options="'options' in question ? question.options : undefined"
           @update-question-list="updateQuestionList" />
       </div>
       <input id="save-changes"
