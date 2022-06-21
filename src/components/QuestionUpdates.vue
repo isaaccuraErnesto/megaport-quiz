@@ -120,14 +120,14 @@ export default Vue.extend({
         { 'multiple-choice': 'Multiple choice' },
         { 'type-a-word': 'Type a word' },
       ] as QuestionTypeObject[],
-      questionToUpdate: undefined as string | undefined,
-      optionOne: undefined as string | undefined,
-      optionTwo: undefined as string | undefined,
-      optionThree: undefined as string | undefined,
-      optionFour: undefined as string | undefined,
-      updatedValueType: undefined as string | undefined,
-      updatedPlaceholder: undefined as string | undefined,
-      updatedAnswer: undefined as string | undefined,
+      questionToUpdate: '',
+      optionOne: '',
+      optionTwo: '',
+      optionThree: '',
+      optionFour: '',
+      updatedValueType: '',
+      updatedPlaceholder: '',
+      updatedAnswer: '',
     }
   },
 
@@ -156,8 +156,8 @@ export default Vue.extend({
      * Updates a question
      */
     updateQuestion(): void {
-      let updatedQuestion: TypeQuestion | ChoiceQuestion | undefined
-      let updatedOptionsToBeChecked: string[] = [this.optionOne as string, this.optionTwo as string, this.optionThree as string, this.optionFour as string]
+      let updatedQuestion: TypeQuestion | ChoiceQuestion
+      let updatedOptionsToBeChecked = [this.optionOne, this.optionTwo, this.optionThree, this.optionFour]
       if (this.questionTypeToUpdate === QuestionTypes.multipleChoice) {
         if (!updatedOptionsToBeChecked.includes(this.updatedAnswer as string)) {
           alert(`Very funny ${this.userName}, none of your options matches your answer!`)
@@ -176,6 +176,8 @@ export default Vue.extend({
             answer: this.updatedAnswer as string,
             valueType: this.updatedValueType as string,
           }
+          this.$emit('update-question-list', updatedQuestion)
+          this.removeId(updatedQuestion)
         }
       } else if (this.questionTypeToUpdate === QuestionTypes.typeAWord) {
         updatedQuestion = {
@@ -185,11 +187,11 @@ export default Vue.extend({
           placeholder: this.updatedPlaceholder as string,
           answer: this.updatedAnswer as string,
         }
+        this.$emit('update-question-list', updatedQuestion)
+        this.removeId(updatedQuestion)
       } else {
         alert('Please select a valid question type')
       }
-      this.$emit('update-question-list', updatedQuestion)
-      this.removeId(updatedQuestion)
     },
     /**
      * Cancels the process of updation a question

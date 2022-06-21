@@ -122,7 +122,7 @@ export default Vue.extend({
     }),
     sortedQuestions(): (TypeQuestion | ChoiceQuestion)[] {
       if (this.sortingOrder !== 'Default') {
-        return this.questions.slice().sort((a, b) => {
+        return this.questions.slice().sort((a: TypeQuestion | ChoiceQuestion, b: TypeQuestion | ChoiceQuestion): number => {
           if (this.sortingOrder === 'Alphabetical') {
             let questionA = a.question
             let questionB = b.question
@@ -197,7 +197,7 @@ export default Vue.extend({
       const target = submitEvent.target as HTMLFormElement
       const elements = target.elements
       this.sortingOptions.push('Results')
-      this.sortedQuestions.forEach(question => {
+      this.sortedQuestions.forEach((question: TypeQuestion | ChoiceQuestion) => {
         const answer = (elements.namedItem(`${question.answer}-${question.id}`) as HTMLInputElement).value
         if (answer.toUpperCase() === question.answer.toUpperCase()) {
           question['result'] = QuestionResult.correct
@@ -225,7 +225,7 @@ export default Vue.extend({
     /**
      * Resets the quiz
      */
-    resetForm() {
+    resetForm(): void {
       for (let i = 0; i < this.sortedQuestions.length; i++) {
         delete this.sortedQuestions[i]['result']
         delete this.sortedQuestions[i]['userRespondedCorrectly']

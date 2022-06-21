@@ -23,12 +23,10 @@ export default Vue.extend({
 
   props: {
     message: {
-      default: 'Megaquiz',
       type: String as PropType<string>,
       required: true,
     },
     inputValue: {
-      default: 'Submit',
       type: String as PropType<string>,
       required: true,
     },

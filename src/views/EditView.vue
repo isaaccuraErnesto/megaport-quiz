@@ -207,19 +207,19 @@ export default Vue.extend({
     return {
       unsavedQuestions: initialData.questions as (TypeQuestion | ChoiceQuestion)[],
       userWantsToAddQuestion: false,
-      questionTypeToAdd: undefined as string | undefined,
+      questionTypeToAdd: '',
       questionTypes: [
         { 'multiple-choice': 'Multiple choice' },
         { 'type-a-word': 'Type a word' },
       ] as QuestionTypeObject[],
-      newQuestion: undefined as string | undefined,
-      optionOne: undefined as string | undefined,
-      optionTwo: undefined as string | undefined,
-      optionThree: undefined as string | undefined,
-      optionFour: undefined as string | undefined,
-      newValueType: undefined as string | undefined,
-      newPlaceholder: undefined as string | undefined,
-      newAnswer: undefined as string | undefined,
+      newQuestion: '',
+      optionOne: '',
+      optionTwo: '',
+      optionThree: '',
+      optionFour: '',
+      newValueType: '',
+      newPlaceholder: '',
+      newAnswer: '',
     }
   },
 
@@ -241,7 +241,7 @@ export default Vue.extend({
      * @param deleteThisId - The id of the question to be deleted
      */
     deleteQuestion(deleteThisId: number): void {
-      this.unsavedQuestions = this.unsavedQuestions.filter(question => question.id !== deleteThisId)
+      this.unsavedQuestions = this.unsavedQuestions.filter((question: TypeQuestion | ChoiceQuestion) => question.id !== deleteThisId)
     },
     /**
      * Registers the user's desire to add a new question, which is then used to render a form in the UI
@@ -311,7 +311,7 @@ export default Vue.extend({
      * @param updatedQuestion
      */
     updateQuestionList(updatedQuestion: TypeQuestion | ChoiceQuestion): void {
-      this.unsavedQuestions.forEach((question, index): void => {
+      this.unsavedQuestions.forEach((question: TypeQuestion | ChoiceQuestion, index: number): void => {
         if (question.id === updatedQuestion.id) {
           this.unsavedQuestions[index] = updatedQuestion
         }

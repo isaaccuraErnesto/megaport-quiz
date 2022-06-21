@@ -19,7 +19,7 @@ const mutations = {
    * @param storeState - This module's state
    * @param questionList - An array containing the current list of questions
    */
-  setNewQuestionList: (storeState: QuestionsState, questionList: (ChoiceQuestion | TypeQuestion)[]) => {
+  setNewQuestionList: (storeState: QuestionsState, questionList: (ChoiceQuestion | TypeQuestion)[]): void => {
     storeState.questions = [...questionList]
   },
 }
