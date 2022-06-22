@@ -1,12 +1,6 @@
-import { QuestionTypes } from '@/enums/QuestionTypes'
+import { BaseQuestion } from './BaseQuestion'
 
-export interface ChoiceQuestion {
-  id: number
-  type: QuestionTypes
-  question: string
+export interface ChoiceQuestion extends BaseQuestion {
   options: string[]
-  answer: string
   valueType: string
-  result?: string
-  userRespondedCorrectly?: boolean
 }
