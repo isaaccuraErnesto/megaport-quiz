@@ -295,7 +295,7 @@ export default Vue.extend({
         if (prop === 'userWantsToAddQuestion') {
           this.userWantsToAddQuestion = false
         } else if (prop !== 'unsavedQuestions' && prop !== 'questionTypes') {
-          _data[prop] = undefined
+          _data[prop] = ''
         }
       }
     },
