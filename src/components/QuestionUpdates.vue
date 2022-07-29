@@ -194,7 +194,7 @@ export default Vue.extend({
       }
     },
     /**
-     * Cancels the process of updation a question
+     * Cancels the process of updating a question
      * @param question - The question that was in the process of being updated
      */
     cancelUpdate(question: ChoiceQuestion | TypeQuestion): void {
